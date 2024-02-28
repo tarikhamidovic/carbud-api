@@ -1,0 +1,14 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: example
+      database: carbud
+      port: 27017
+      host: localhost
+      auto-index-creation: true
+
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem

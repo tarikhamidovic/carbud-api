@@ -1,0 +1,77 @@
+POST http://localhost:8080/vehicles
+Content-Type: application/json
+
+{
+  "title": "String",
+  "manufacturer": "String",
+  "model": "String",
+  "distance": 2,
+  "firstRegistration": 2,
+  "fuelType": "Petrol",
+  "horsePower": 2,
+  "kiloWats": 2,
+  "transmission": "Automatic",
+  "numberOfOwners": 2,
+  "color": "String",
+  "doorCount": 2,
+  "price": 2
+}
+
+###
+GET http://localhost:8080/vehicles
+Accept: application/json
+
+###
+DELETE http://localhost:8080/vehicles/658d6edd60fdd16fa78db0aa
+Accept: application/json
+
+###
+PUT http://localhost:8080/vehicles/123
+Content-Type: application/json
+
+{
+  "title": "String",
+  "manufacturer": "String",
+  "model": "String",
+  "distance": 2,
+  "firstRegistration": 2,
+  "fuelType": "String",
+  "horsePower": 2,
+  "kiloWats": 2,
+  "transmission": "String",
+  "numberOfOwners": 2,
+  "color": "String",
+  "doorCount": 2,
+  "price": 2
+}
+
+###
+
+GET http://localhost:8080/vehicles
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoidGFyaWsiLCJleHAiOjE3MDcwODcyNzAsImlhdCI6MTcwNzA4MzY3MCwic2NvcGUiOltdfQ.o_9XiK0y0k98N4c1QeDSSq49YhuXBMnHBCvT6cQbBEtnNb5iIJ2ctme06EFcR1EpzC8Lqfhap6Js2GOf0Vuw1Vj7xeueX2kwdla43c_kLc1mQE7u6SfDjWqqc1QiiKh11-z4_FPuKbvNuPjhW7yRZvHvdQf9wOB-bYj30H3EmX8KErJQ_Ezpu2dK8Z6Zao0SKcByHsFtttmWb5ZsBfqwTSeJpW8wR8AD5pb0hrXUbB_LX6MwtxzjqcMWTRm67Jvl-jqLMZ9fVPKB_njKJKyFXovuOOBEo6tcs29LMMEvzWbve5ncHRRuq3gyyh8uTmEdH8YYZaNMJfFjx6olvFc5Vg
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "username": "glumac",
+  "password": "glumac123"
+}
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "glumac",
+  "password": "glumac123"
+}
+
+###
+GET http://localhost:8080/vehicles/65914e2da0ef5373145188ec
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoicGVyc29uaWZ5IiwiZXhwIjoxNzA3NTkwMDA0LCJpYXQiOjE3MDc1ODY0MDQsInNjb3BlIjpbXX0.VXHNYToHgrJ_QOGalOontIbjxit5-KpzDSHnwsH_NKuT4hMgnQEGTk18yC9q3CO_7-l00dLYdZX0EO2CMuGuUHuCivRmy8BnPpPbqYMdWLvxq0ruSAwWyGyW5I367LZM04VaFMetMZ8b-ortsV_i-DVNWxgfUQ5895WZoFpJQMRQursZRiFv8uGUWgZroBhHZW41veeOl91aw4zBkVUO3oboOGQUjxVWTU_S5Ydab8v3j-e0EnTC0UEJh__FuQ5LWBzx_RlXJ8zAMNVaylpo5HBq6mnWz84D5GQ2LRAqXKA3M-Ns2GqpQML1X27F4HqCXj-6pGwJ9G7deeY42evYJA
