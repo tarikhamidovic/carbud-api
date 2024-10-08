@@ -12,6 +12,7 @@ data class Vehicle(
     val id: String? = null,
     val title: String,
     @Indexed
+    // dodaj manufacturer kao poseban document koji sadrzi listu od models
     val manufacturer: String,
     @Indexed
     val model: String,

@@ -24,11 +24,13 @@ class VehicleService(
         private const val MANUFACTURER = "manufacturer"
         private const val MODEL = "model"
         private const val DISTANCE = "distance"
+        private const val DISTANCE_LT = "distancelt"
         private const val FIRST_REGISTRATION = "firstRegistration"
         private const val FUEL_TYPE = "fuelType"
         private const val TRANSMISSION = "transmission"
         private const val COLOR = "color"
         private const val PRICE = "price"
+        private const val PRICE_LT = "pricelt"
     }
 
     fun getFilteredVehicles(params: Map<String, String>): Page<VehicleResponse> {
@@ -52,19 +54,19 @@ class VehicleService(
         params[COLOR]?.let {
             query.addCriteria(Criteria.where(COLOR).`is`(it))
         }
-        params[DISTANCE]?.let { distance ->
+        params[DISTANCE_LT]?.let { distance ->
             distance.toIntOrNull()?.let {
-                query.addCriteria(Criteria.where(DISTANCE).`is`(it))
+                query.addCriteria(Criteria.where(DISTANCE).lte(it))
             }
         }
         params[FIRST_REGISTRATION]?.let { firstRegistration ->
             firstRegistration.toIntOrNull()?.let {
-                query.addCriteria(Criteria.where(FIRST_REGISTRATION).`is`(it))
+                query.addCriteria(Criteria.where(FIRST_REGISTRATION).gte(it))
             }
         }
-        params[PRICE]?.let { price ->
+        params[PRICE_LT]?.let { price ->
             price.toIntOrNull()?.let {
-                query.addCriteria(Criteria.where(PRICE).`is`(it))
+                query.addCriteria(Criteria.where(PRICE).lte(it))
             }
         }
         val countQuery = Query.of(query)
