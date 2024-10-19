@@ -2,6 +2,7 @@ package com.example.carbud.config
 
 import com.example.carbud.seller.exceptions.SellerNotFoundException
 import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -13,9 +14,9 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(SellerNotFoundException::class)
     fun handleSellerNotFoundException(ex: SellerNotFoundException) =
-        ResponseEntity.notFound().build<String>()
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 
     @ExceptionHandler(VehicleNotFoundException::class)
-    fun handleVehicleNotFoundException(ex: RuntimeException, request: WebRequest) =
-        ResponseEntity.notFound().build<String>()
+    fun handleVehicleNotFoundException(ex: VehicleNotFoundException, request: WebRequest) =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 }
