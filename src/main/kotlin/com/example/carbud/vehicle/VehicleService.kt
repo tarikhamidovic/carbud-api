@@ -76,9 +76,13 @@ class VehicleService(
         return PageImpl(result, page, totalCount)
     }
 
-    fun updateVehicle(vehicleId: String, vehicleRequest: VehicleRequest): VehicleResponse {
-        val existingVehicle = vehicleRepository.findById(vehicleId)
-            .orElseThrow { VehicleNotFoundException("Vehicle with provided id: $vehicleId does not exist") }
+    fun getVehicleById(vehicleId: String): Vehicle {
+        return vehicleRepository.findVehicleById(vehicleId)
+            ?: throw VehicleNotFoundException("Vehicle with provided id: $vehicleId does not exist")
+    }
+
+    fun updateVehicle(vehicleId: String, vehicleRequest: VehicleRequest): Vehicle {
+        val existingVehicle = getVehicleById(vehicleId)
 
         val updatedVehicle = existingVehicle.copy(
             title = vehicleRequest.title,
@@ -96,10 +100,8 @@ class VehicleService(
             price = vehicleRequest.price,
             features = vehicleRequest.features
         )
-        return vehicleRepository.save(updatedVehicle).toResponse()
+        return vehicleRepository.save(updatedVehicle)
     }
-
-    fun getVehicleById(vehicleId: String) = vehicleRepository.findById(vehicleId).map { it.toResponse() }.getOrNull()
 
     fun createVehicle(vehicleRequest: VehicleRequest) = vehicleRepository.save(vehicleRequest.toEntity())
 

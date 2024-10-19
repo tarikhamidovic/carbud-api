@@ -13,11 +13,11 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
 
-
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(private val authenticationProvider: AuthenticationProvider) {
-
+class SecurityConfig(
+    private val authenticationProvider: AuthenticationProvider
+) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
         http

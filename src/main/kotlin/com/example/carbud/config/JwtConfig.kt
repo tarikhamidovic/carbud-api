@@ -13,8 +13,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 
 @Configuration
-class JwtConfig(private val rsaKeyProperties: RsaKeyProperties) {
-
+class JwtConfig(
+    private val rsaKeyProperties: RsaKeyProperties
+) {
     @Bean
     fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(rsaKeyProperties.publicKey).build()
 

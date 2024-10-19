@@ -12,8 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class AuthenticationConfig(private val userRepository: UserRepository) {
-
+class AuthenticationConfig(
+    private val userRepository: UserRepository
+) {
     @Bean
     fun userDetailsService() = UserDetailsService { userRepository.findUserByEmail(it) }
 

@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @CrossOrigin
-class AuthController(private val authService: AuthService) {
-
+class AuthController(
+    private val authService: AuthService
+) {
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest) = authService.login(loginRequest)
 

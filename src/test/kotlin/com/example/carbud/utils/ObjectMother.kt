@@ -67,8 +67,6 @@ object ObjectMother {
 
     val sellerResponse = seller.toResponse()
 
-    val sellerOptional = Optional.of(seller)
-
     val sellerRequest = SellerRequest(
         firstName = "test name",
         lastName = "test last",
@@ -87,14 +85,6 @@ object ObjectMother {
         email = "test@test.com",
         location = "test location",
         userId = "userid123"
-    )
-
-    val sellerResponseFromRequest = sellerFromRequest.toResponse()
-
-    val sellerResponsePage = PageImpl(
-        listOf(sellerResponse),
-        PageRequest.of(0, 10),
-        1
     )
 
     val loginRequest = LoginRequest(

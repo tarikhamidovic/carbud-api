@@ -4,4 +4,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface VehicleRepository : MongoRepository<Vehicle, String>
+interface VehicleRepository : MongoRepository<Vehicle, String> {
+    fun findVehicleById(id: String): Vehicle?
+}

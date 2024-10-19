@@ -6,6 +6,7 @@ import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
 import io.mockk.*
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -17,7 +18,9 @@ class VehicleServiceTest : BaseUnitTest() {
 
     private val vehicleRepository = mockk<VehicleRepository>(){
         every { findById("abc123") } returns vehicleOptional
+        every { findVehicleById("abc123") } returns ObjectMother.vehicle
         every { findById("no123") } returns Optional.empty()
+        every { findVehicleById("no123") } returns null
         every { save(any()) } returns ObjectMother.vehicle
         every { deleteById(any()) } just Runs
     }
@@ -64,15 +67,16 @@ class VehicleServiceTest : BaseUnitTest() {
 
     @Test
     fun `getVehicleById when given vehicleId return Vehicle`() {
-        val expected = ObjectMother.vehicleResponse
+        val expected = ObjectMother.vehicle
         val result = vehicleService.getVehicleById("abc123")
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `getVehicleById when given vehicleId and no vehicle found return null`() {
-        val result = vehicleService.getVehicleById("no123")
-        assertThat(result).isNull()
+    fun `getVehicleById when given vehicleId and no vehicle found throws VehicleNotFoundException`() {
+        assertThrows<VehicleNotFoundException> {
+            vehicleService.getVehicleById("no123")
+        }
     }
 
     @Test
@@ -85,7 +89,7 @@ class VehicleServiceTest : BaseUnitTest() {
 
     @Test
     fun `updateVehicle when given existing Vehicle update and persist`() {
-        val expected = ObjectMother.vehicleResponse
+        val expected = ObjectMother.vehicle
         val result = vehicleService.updateVehicle("abc123", ObjectMother.vehicleRequest)
         assertThat(result).isEqualTo(expected)
         verify(exactly = 1) { vehicleRepository.save(any()) }
@@ -93,8 +97,9 @@ class VehicleServiceTest : BaseUnitTest() {
 
     @Test
     fun `updateVehicle when given Vehicle which does not exist throw VehicleNotFoundException`() {
-        assertThatExceptionOfType(VehicleNotFoundException::class.java)
-            .isThrownBy { vehicleService.updateVehicle("no123", ObjectMother.vehicleRequest) }
+        assertThrows<VehicleNotFoundException> {
+            vehicleService.updateVehicle("no123", ObjectMother.vehicleRequest)
+        }
     }
 
     @Test

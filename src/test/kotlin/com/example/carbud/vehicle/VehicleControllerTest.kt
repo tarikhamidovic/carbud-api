@@ -41,8 +41,8 @@ class VehicleControllerTest : BaseControllerTest() {
 
     @Test
     fun `getVehicleById when given id of existing vehicle should return 200 and json`() {
-        every { vehicleService.getVehicleById("abc123") } returns ObjectMother.vehicleResponse
-        val expected = objectMapper.writeValueAsString(ObjectMother.vehicleResponse)
+        every { vehicleService.getVehicleById("abc123") } returns ObjectMother.vehicle
+        val expected = objectMapper.writeValueAsString(ObjectMother.vehicle)
 
         mockMvc.get("/vehicles/abc123")
             .andExpect {
@@ -52,13 +52,12 @@ class VehicleControllerTest : BaseControllerTest() {
     }
 
     @Test
-    fun `getVehicleById when given id of non-existing vehicle should return 200 and empty`() {
-        every { vehicleService.getVehicleById("no123") } returns null
+    fun `getVehicleById when given id of non-existing vehicle should return 404`() {
+        every { vehicleService.getVehicleById("no123") } throws VehicleNotFoundException("")
 
         mockMvc.get("/vehicles/no123")
             .andExpect {
-                status { isOk() }
-                content { string("") }
+                status { isNotFound() }
             }
     }
 
@@ -81,7 +80,7 @@ class VehicleControllerTest : BaseControllerTest() {
     @Test
     fun `updateVehicle when given VehicleRequest and vehicle which exists should return 204`() {
         val request = ObjectMother.vehicleRequest
-        every { vehicleService.updateVehicle(any(), request) } returns request.toEntity().toResponse()
+        every { vehicleService.updateVehicle(any(), request) } returns request.toEntity()
 
         mockMvc
             .put("/vehicles/abc123") {
@@ -95,7 +94,7 @@ class VehicleControllerTest : BaseControllerTest() {
     }
 
     @Test
-    fun `updateVehicle when given VehicleRequest and vehicle not exists should return 400`() {
+    fun `updateVehicle when given VehicleRequest and vehicle not exists should return 404`() {
         val request = ObjectMother.vehicleRequest
         every { vehicleService.updateVehicle(any(), request) } throws VehicleNotFoundException("")
 
@@ -104,7 +103,7 @@ class VehicleControllerTest : BaseControllerTest() {
                 content = objectMapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }
-            .andExpect { status { isBadRequest() } }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test

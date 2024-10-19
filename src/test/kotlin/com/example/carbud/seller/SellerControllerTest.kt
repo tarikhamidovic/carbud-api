@@ -1,6 +1,7 @@
 package com.example.carbud.seller
 
 import com.example.carbud.BaseControllerTest
+import com.example.carbud.seller.exceptions.SellerNotFoundException
 import com.example.carbud.utils.ObjectMother
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.Runs
@@ -23,7 +24,7 @@ class SellerControllerTest : BaseControllerTest() {
 
     @Test
     fun `getSellerBydId when given sellerId returns 200 and json`() {
-        every { sellerService.getSellerById("1") } returns ObjectMother.sellerResponse
+        every { sellerService.getSellerById("1") } returns ObjectMother.seller
         val expected = objectMapper.writeValueAsString(ObjectMother.sellerResponse)
 
         mockMvc.get("/sellers/1")
@@ -34,8 +35,18 @@ class SellerControllerTest : BaseControllerTest() {
     }
 
     @Test
+    fun `getSellerBydId when given non-existing sellerId returns 404`() {
+        every { sellerService.getSellerById("0") } throws SellerNotFoundException("")
+
+        mockMvc.get("/sellers/0")
+            .andExpect {
+                status { isNotFound() }
+            }
+    }
+
+    @Test
     fun `updateSeller when given sellerId and sellerRequest returns 204`() {
-        every { sellerService.updateSeller("1", ObjectMother.sellerRequest) } returns ObjectMother.sellerResponse
+        every { sellerService.updateSeller("1", ObjectMother.sellerRequest) } returns ObjectMother.seller
 
         mockMvc.put("/sellers/1") {
             content = objectMapper.writeValueAsString(ObjectMother.sellerRequest)

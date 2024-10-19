@@ -20,7 +20,6 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager
 ) {
-
     fun register(request: RegistrationRequest): String {
         val existingUser = userRepository.findUserByEmail(request.username)
 
