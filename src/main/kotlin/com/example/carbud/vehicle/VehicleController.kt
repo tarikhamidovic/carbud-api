@@ -1,6 +1,8 @@
 package com.example.carbud.vehicle
 
 import com.example.carbud.vehicle.dto.VehicleRequest
+import com.example.carbud.vehicle.dto.VehicleResponse
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,7 +21,9 @@ class VehicleController(
     private val vehicleService: VehicleService
 ) {
     @GetMapping
-    fun getFilteredVehicles(@RequestParam params: Map<String, String>) = vehicleService.getFilteredVehicles(params)
+    fun getFilteredVehicles(@RequestParam params: Map<String, String>): Page<VehicleResponse> {
+        return vehicleService.getFilteredVehicles(params).map { it.toResponse() }
+    }
 
     @GetMapping("/{vehicleId}")
     fun getVehicleById(@PathVariable vehicleId: String) = vehicleService.getVehicleById(vehicleId)

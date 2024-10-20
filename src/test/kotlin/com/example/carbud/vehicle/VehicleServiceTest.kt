@@ -10,16 +10,11 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.MongoTemplate
-import java.util.Optional
 
 class VehicleServiceTest : BaseUnitTest() {
 
-    private val vehicleOptional = Optional.of(ObjectMother.vehicle)
-
     private val vehicleRepository = mockk<VehicleRepository>(){
-        every { findById("abc123") } returns vehicleOptional
         every { findVehicleById("abc123") } returns ObjectMother.vehicle
-        every { findById("no123") } returns Optional.empty()
         every { findVehicleById("no123") } returns null
         every { save(any()) } returns ObjectMother.vehicle
         every { deleteById(any()) } just Runs
@@ -32,9 +27,9 @@ class VehicleServiceTest : BaseUnitTest() {
     private val vehicleService = VehicleService(vehicleRepository, mongoTemplate)
 
     @Test
-    fun `getFilteredVehicles when page number not given should return page zero with VehicleResponse`() {
+    fun `getFilteredVehicles when page number not given should return page zero with Vehicle`() {
         val expected = PageImpl(
-            listOf(ObjectMother.vehicleResponse),
+            listOf(ObjectMother.vehicle),
             PageRequest.of(0, 10),
             1
         )
@@ -43,9 +38,9 @@ class VehicleServiceTest : BaseUnitTest() {
     }
 
     @Test
-    fun `getFilteredVehicles when given filters should return page with VehicleResponse`() {
+    fun `getFilteredVehicles when given filters should return Vehicle page`() {
         val expected = PageImpl(
-            listOf(ObjectMother.vehicleResponse),
+            listOf(ObjectMother.vehicle),
             PageRequest.of(0, 10),
             1
         )

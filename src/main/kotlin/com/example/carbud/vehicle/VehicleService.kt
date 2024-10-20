@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class VehicleService(
@@ -33,7 +32,7 @@ class VehicleService(
         private const val PRICE_LT = "pricelt"
     }
 
-    fun getFilteredVehicles(params: Map<String, String>): Page<VehicleResponse> {
+    fun getFilteredVehicles(params: Map<String, String>): Page<Vehicle> {
         val page = PageRequest.of(
             params[PAGE]?.toIntOrNull() ?: 0,
             10
@@ -71,7 +70,7 @@ class VehicleService(
         }
         val countQuery = Query.of(query)
         val totalCount = mongoTemplate.count(countQuery, Vehicle::class.java)
-        val result = mongoTemplate.find(query, Vehicle::class.java).map { it.toResponse() }
+        val result = mongoTemplate.find(query, Vehicle::class.java)
 
         return PageImpl(result, page, totalCount)
     }

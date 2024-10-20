@@ -27,7 +27,7 @@ class VehicleControllerTest : BaseControllerTest() {
     @Test
     fun `getFilteredVehicle when given filters returns 200 and json`() {
         val page = PageImpl(
-            listOf(ObjectMother.vehicleResponse),
+            listOf(ObjectMother.vehicle),
             PageRequest.of(0, 10),
             1
         )
