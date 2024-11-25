@@ -1,5 +1,6 @@
 package com.example.carbud.vehicle
 
+import com.example.carbud.manufacturer.ManufacturerService
 import com.example.carbud.vehicle.dto.VehicleRequest
 import com.example.carbud.vehicle.dto.VehicleResponse
 import com.example.carbud.vehicle.enums.FuelType
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service
 @Service
 class VehicleService(
     private val vehicleRepository: VehicleRepository,
+    private val manufacturerService: ManufacturerService,
     private val mongoTemplate: MongoTemplate
 ) {
     companion object {
@@ -96,13 +98,15 @@ class VehicleService(
             numberOfOwners = vehicleRequest.numberOfOwners,
             color = vehicleRequest.color,
             doorCount = vehicleRequest.doorCount,
-            price = vehicleRequest.price,
-            features = vehicleRequest.features
+            price = vehicleRequest.price
         )
         return vehicleRepository.save(updatedVehicle)
     }
 
-    fun createVehicle(vehicleRequest: VehicleRequest) = vehicleRepository.save(vehicleRequest.toEntity())
+    fun createVehicle(vehicleRequest: VehicleRequest): Vehicle {
+        manufacturerService.addModelToManufacturer(vehicleRequest.manufacturer, vehicleRequest.model)
+        return vehicleRepository.save(vehicleRequest.toEntity())
+    }
 
     fun deleteVehicleById(vehicleId: String) = vehicleRepository.deleteById(vehicleId)
 }

@@ -12,7 +12,6 @@ data class Vehicle(
     val id: String? = null,
     val title: String,
     @Indexed
-    // dodaj manufacturer kao poseban document koji sadrzi listu od models
     val manufacturer: String,
     @Indexed
     val model: String,
@@ -25,6 +24,5 @@ data class Vehicle(
     val numberOfOwners: Int,
     val color: String,
     val doorCount: Int,
-    val price: Int,
-    val features: List<String> = emptyList()
+    val price: Int
 )

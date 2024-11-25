@@ -1,6 +1,7 @@
 package com.example.carbud.vehicle
 
 import com.example.carbud.BaseUnitTest
+import com.example.carbud.manufacturer.ManufacturerService
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
 import io.mockk.*
@@ -13,18 +14,21 @@ import org.springframework.data.mongodb.core.MongoTemplate
 
 class VehicleServiceTest : BaseUnitTest() {
 
-    private val vehicleRepository = mockk<VehicleRepository>(){
+    private val vehicleRepository = mockk<VehicleRepository> {
         every { findVehicleById("abc123") } returns ObjectMother.vehicle
         every { findVehicleById("no123") } returns null
         every { save(any()) } returns ObjectMother.vehicle
         every { deleteById(any()) } just Runs
     }
-    private val mongoTemplate = mockk<MongoTemplate>() {
+    private val manufacturerService = mockk<ManufacturerService> {
+        every { addModelToManufacturer(any(), any()) } just Runs
+    }
+    private val mongoTemplate = mockk<MongoTemplate> {
         every { count(any(), Vehicle::class.java) } returns 1
         every { find(any(), Vehicle::class.java) } returns listOf(ObjectMother.vehicle)
     }
 
-    private val vehicleService = VehicleService(vehicleRepository, mongoTemplate)
+    private val vehicleService = VehicleService(vehicleRepository, manufacturerService ,mongoTemplate)
 
     @Test
     fun `getFilteredVehicles when page number not given should return page zero with Vehicle`() {

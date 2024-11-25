@@ -3,9 +3,16 @@ package com.example.carbud.seller
 import com.example.carbud.BaseUnitTest
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.seller.exceptions.SellerNotFoundException
+import com.example.carbud.utils.ObjectMother.vehicle
+import com.example.carbud.utils.ObjectMother.vehicleResponse
+import com.example.carbud.vehicle.VehicleService
+import com.example.carbud.vehicle.toEntity
+import com.example.carbud.vehicle.toVehicleInfo
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.assertThrows
 
 class SellerServiceTest : BaseUnitTest() {
@@ -16,8 +23,11 @@ class SellerServiceTest : BaseUnitTest() {
         every { deleteById("1") } just Runs
         every { save(ObjectMother.sellerFromRequest) } returns ObjectMother.sellerFromRequest
     }
+    private val vehicleService = mockk<VehicleService> {
+        every { createVehicle(ObjectMother.vehicleRequest) } returns ObjectMother.vehicleRequest.toEntity()
+    }
 
-    private val sellerService = SellerService(sellerRepository)
+    private val sellerService = SellerService(sellerRepository, vehicleService)
 
     private val sellerRequest = ObjectMother.sellerRequest
 
@@ -33,6 +43,19 @@ class SellerServiceTest : BaseUnitTest() {
         assertThrows<SellerNotFoundException> {
             sellerService.getSellerById("null-id")
         }
+    }
+
+    @Test
+    fun `createVehicleForSeller when given sellerId and vehicle request creates vehicle and adds it to seller and returns seller`() {
+        val vehicleRequest = ObjectMother.vehicleRequest
+        val sellerSlot = slot<Seller>()
+
+        every { sellerRepository.save(capture(sellerSlot)) } returns mockk()
+
+        sellerService.createVehicleForSeller("1", vehicleRequest)
+        val capturedVehicle = sellerSlot.captured.vehicles
+
+        assertTrue(capturedVehicle.contains(vehicleRequest.toEntity().toVehicleInfo()))
     }
 
     @Test

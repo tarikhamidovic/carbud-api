@@ -13,6 +13,5 @@ data class VehicleResponse(
     val numberOfOwners: Int,
     val color: String,
     val doorCount: Int,
-    val price: Int,
-    val features: List<String> = emptyList()
+    val price: Int
 )

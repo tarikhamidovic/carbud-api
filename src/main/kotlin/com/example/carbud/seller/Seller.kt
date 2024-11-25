@@ -1,5 +1,6 @@
 package com.example.carbud.seller
 
+import com.example.carbud.vehicle.VehicleInfo
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -14,5 +15,5 @@ data class Seller(
     val email: String,
     val location: String,
     val userId: String,
-    val vehicles: List<String> = emptyList()
+    val vehicles: MutableList<VehicleInfo> = mutableListOf()
 )

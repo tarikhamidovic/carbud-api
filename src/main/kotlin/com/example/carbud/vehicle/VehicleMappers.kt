@@ -1,5 +1,6 @@
 package com.example.carbud.vehicle
 
+import com.example.carbud.vehicle.dto.VehicleInfoResponse
 import com.example.carbud.vehicle.dto.VehicleRequest
 import com.example.carbud.vehicle.dto.VehicleResponse
 import com.example.carbud.vehicle.enums.FuelType
@@ -19,8 +20,17 @@ fun Vehicle.toResponse() = VehicleResponse(
     numberOfOwners = numberOfOwners,
     color = color,
     doorCount = doorCount,
-    price = price,
-    features = features
+    price = price
+)
+
+fun Vehicle.toVehicleInfo() = VehicleInfo(
+    id = id,
+    title = title,
+    manufacturer = manufacturer,
+    model = model,
+    distance = distance,
+    firstRegistration = firstRegistration,
+    price = price
 )
 
 fun VehicleRequest.toEntity() = Vehicle(
@@ -36,6 +46,14 @@ fun VehicleRequest.toEntity() = Vehicle(
     numberOfOwners = numberOfOwners,
     color = color,
     doorCount = doorCount,
-    price = price,
-    features = features
+    price = price
+)
+
+fun VehicleInfo.toResponse() = VehicleInfoResponse(
+    title = title,
+    manufacturer = manufacturer,
+    model = model,
+    distance = distance,
+    firstRegistration = firstRegistration,
+    price = price
 )

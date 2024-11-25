@@ -1,6 +1,7 @@
 package com.example.carbud.seller
 
 import com.example.carbud.seller.dto.SellerResponse
+import com.example.carbud.vehicle.toResponse
 
 fun Seller.toResponse() = SellerResponse(
     firstName = firstName,
@@ -9,5 +10,5 @@ fun Seller.toResponse() = SellerResponse(
     phoneNumber = phoneNumber,
     email = email,
     location = location,
-    vehicles = vehicles
+    vehicles = vehicles.map { it.toResponse() }
 )

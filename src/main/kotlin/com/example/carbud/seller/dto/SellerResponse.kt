@@ -1,5 +1,7 @@
 package com.example.carbud.seller.dto
 
+import com.example.carbud.vehicle.dto.VehicleInfoResponse
+
 data class SellerResponse(
     val firstName: String?,
     val lastName: String?,
@@ -7,5 +9,5 @@ data class SellerResponse(
     val phoneNumber: String,
     val email: String,
     val location: String,
-    val vehicles: List<String> = emptyList()
+    val vehicles: List<VehicleInfoResponse> = emptyList()
 )

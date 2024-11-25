@@ -4,6 +4,7 @@ import com.example.carbud.auth.User
 import com.example.carbud.auth.dto.LoginRequest
 import com.example.carbud.auth.dto.RegistrationRequest
 import com.example.carbud.auth.enums.Role
+import com.example.carbud.manufacturer.Manufacturer
 import com.example.carbud.seller.Seller
 import com.example.carbud.seller.dto.SellerRequest
 import com.example.carbud.seller.toResponse
@@ -31,8 +32,7 @@ object ObjectMother {
         numberOfOwners = 1,
         color = "black",
         doorCount = 5,
-        price = 30000,
-        features = emptyList()
+        price = 30000
     )
 
     val vehicleResponse = vehicle.toResponse()
@@ -50,8 +50,7 @@ object ObjectMother {
         numberOfOwners = 1,
         color = "black",
         doorCount = 5,
-        price = 30000,
-        features = emptyList()
+        price = 30000
     )
 
     val seller = Seller(
@@ -101,5 +100,10 @@ object ObjectMother {
         email = "test@test.com",
         uPassword = "test",
         roles = setOf(Role.USER)
+    )
+
+    val manufacturer = Manufacturer(
+        name = "Audi",
+        models = mutableSetOf("A1", "A2", "A3", "A4", "A5", "A6", "A7")
     )
 }
