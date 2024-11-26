@@ -12,9 +12,6 @@ import com.example.carbud.vehicle.*
 import com.example.carbud.vehicle.dto.VehicleRequest
 import com.example.carbud.vehicle.enums.FuelType
 import com.example.carbud.vehicle.enums.Transmission
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
-import java.util.Optional
 
 object ObjectMother {
 
@@ -83,7 +80,8 @@ object ObjectMother {
         phoneNumber = "1234",
         email = "test@test.com",
         location = "test location",
-        userId = "userid123"
+        userId = "userid123",
+        vehicles = mutableListOf()
     )
 
     val loginRequest = LoginRequest(

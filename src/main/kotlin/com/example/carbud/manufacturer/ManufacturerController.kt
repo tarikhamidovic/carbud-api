@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/manufacturers")
-class ManufacturerController(
-    private val manufacturerService: ManufacturerService
-) {
+class ManufacturerController(private val manufacturerService: ManufacturerService) {
+
     @GetMapping
     fun getAllManufacturers(): List<ManufacturerResponse> {
         return manufacturerService.getAllManufacturers().map { it.toResponse() }

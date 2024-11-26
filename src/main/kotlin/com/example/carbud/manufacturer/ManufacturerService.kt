@@ -5,9 +5,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class ManufacturerService(
-    private val manufacturerRepository: ManufacturerRepository
-) {
+class ManufacturerService(private val manufacturerRepository: ManufacturerRepository) {
+
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun getAllManufacturers(): List<Manufacturer> = manufacturerRepository.findAll()

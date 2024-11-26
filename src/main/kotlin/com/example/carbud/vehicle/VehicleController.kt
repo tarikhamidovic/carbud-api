@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/vehicles")
-class VehicleController(
-    private val vehicleService: VehicleService
-) {
+class VehicleController(private val vehicleService: VehicleService) {
+
     @GetMapping
     fun getFilteredVehicles(@RequestParam params: Map<String, String>): Page<VehicleResponse> {
         return vehicleService.getFilteredVehicles(params).map { it.toResponse() }

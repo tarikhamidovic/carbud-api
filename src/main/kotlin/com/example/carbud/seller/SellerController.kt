@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/sellers")
-class SellerController(
-    private val sellerService: SellerService
-) {
+class SellerController(private val sellerService: SellerService) {
+
     @GetMapping("/{sellerId}")
     fun getSellerById(@PathVariable sellerId: String) = sellerService.getSellerById(sellerId).toResponse()
 

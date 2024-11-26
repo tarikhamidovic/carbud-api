@@ -8,9 +8,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @Service
-class TokenService(
-    private val jwtEncoder: JwtEncoder
-) {
+class TokenService(private val jwtEncoder: JwtEncoder) {
+
     fun generateToken(user: User): String {
         val now = Instant.now()
         val scope = user.authorities.map { it.authority }

@@ -3,15 +3,12 @@ package com.example.carbud.seller
 import com.example.carbud.BaseUnitTest
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.seller.exceptions.SellerNotFoundException
-import com.example.carbud.utils.ObjectMother.vehicle
-import com.example.carbud.utils.ObjectMother.vehicleResponse
 import com.example.carbud.vehicle.VehicleService
 import com.example.carbud.vehicle.toEntity
 import com.example.carbud.vehicle.toVehicleInfo
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.assertThrows
 
@@ -28,8 +25,6 @@ class SellerServiceTest : BaseUnitTest() {
     }
 
     private val sellerService = SellerService(sellerRepository, vehicleService)
-
-    private val sellerRequest = ObjectMother.sellerRequest
 
     @Test
     fun `getSellerById when given sellerId return SellerResponse`() {
@@ -66,6 +61,7 @@ class SellerServiceTest : BaseUnitTest() {
 
     @Test
     fun `updateSeller when given sellerId and sellerRequest but seller does not exist throw SellerNotFoundException`() {
+        val sellerRequest = ObjectMother.sellerRequest.copy()
         assertThrows<SellerNotFoundException> {
             sellerService.updateSeller("null-id", sellerRequest)
         }
@@ -73,8 +69,13 @@ class SellerServiceTest : BaseUnitTest() {
 
     @Test
     fun `updateSeller when given sellerId and sellerRequest persist updated seller`() {
+        val sellerRequest = ObjectMother.sellerRequest
+        val seller = ObjectMother.seller.copy(vehicles = mutableListOf())
+        every { sellerRepository.findSellerById("2") } returns seller
+
         val expected = ObjectMother.sellerFromRequest
-        val result = sellerService.updateSeller("1", sellerRequest)
+        val result = sellerService.updateSeller("2", sellerRequest)
+
         assertThat(result).isEqualTo(expected)
         verify { sellerRepository.save(any()) }
     }
