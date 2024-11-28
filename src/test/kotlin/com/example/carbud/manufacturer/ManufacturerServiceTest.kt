@@ -10,7 +10,7 @@ import org.junit.jupiter.api.assertThrows
 
 class ManufacturerServiceTest : BaseUnitTest() {
 
-    private val manufacturer = ObjectMother.manufacturer
+    private val manufacturer = ObjectMother.manufacturer()
 
     private val manufacturerRepository = mockk<ManufacturerRepository> {
         every { findAll() } returns listOf(manufacturer)

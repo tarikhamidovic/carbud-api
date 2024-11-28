@@ -21,8 +21,8 @@ class AuthControllerTest : BaseControllerTest() {
     @MockkBean
     private lateinit var authService: AuthService
 
-    private val loginRequest = ObjectMother.loginRequest
-    private val registrationRequest = ObjectMother.registrationRequest
+    private val loginRequest = ObjectMother.loginRequest()
+    private val registrationRequest = ObjectMother.registrationRequest()
 
     @Test
     fun `login when given request body calls login`() {

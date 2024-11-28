@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 class AuthServiceTest : BaseUnitTest() {
 
-    private val user = ObjectMother.user
+    private val user = ObjectMother.user()
 
     private val userRepository = mockk<UserRepository> {
         every { findUserByEmail("test@test.com") } returns null

@@ -21,8 +21,8 @@ class ManufacturerControllerTest : BaseControllerTest() {
 
     @Test
     fun `getAllManufacturers when requested returns 200 and json`() {
-        every { manufacturerService.getAllManufacturers() } returns listOf(ObjectMother.manufacturer)
-        val expected = objectMapper.writeValueAsString(listOf(ObjectMother.manufacturer))
+        every { manufacturerService.getAllManufacturers() } returns listOf(ObjectMother.manufacturer())
+        val expected = objectMapper.writeValueAsString(listOf(ObjectMother.manufacturer()))
 
         mockMvc.get("/manufacturers")
             .andExpect {

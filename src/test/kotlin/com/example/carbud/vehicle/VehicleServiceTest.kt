@@ -15,9 +15,9 @@ import org.springframework.data.mongodb.core.MongoTemplate
 class VehicleServiceTest : BaseUnitTest() {
 
     private val vehicleRepository = mockk<VehicleRepository> {
-        every { findVehicleById("abc123") } returns ObjectMother.vehicle
+        every { findVehicleById("abc123") } returns ObjectMother.vehicle()
         every { findVehicleById("no123") } returns null
-        every { save(any()) } returns ObjectMother.vehicle
+        every { save(any()) } returns ObjectMother.vehicle()
         every { deleteById(any()) } just Runs
     }
     private val manufacturerService = mockk<ManufacturerService> {
@@ -25,7 +25,7 @@ class VehicleServiceTest : BaseUnitTest() {
     }
     private val mongoTemplate = mockk<MongoTemplate> {
         every { count(any(), Vehicle::class.java) } returns 1
-        every { find(any(), Vehicle::class.java) } returns listOf(ObjectMother.vehicle)
+        every { find(any(), Vehicle::class.java) } returns listOf(ObjectMother.vehicle())
     }
 
     private val vehicleService = VehicleService(vehicleRepository, manufacturerService ,mongoTemplate)
@@ -33,7 +33,7 @@ class VehicleServiceTest : BaseUnitTest() {
     @Test
     fun `getFilteredVehicles when page number not given should return page zero with Vehicle`() {
         val expected = PageImpl(
-            listOf(ObjectMother.vehicle),
+            listOf(ObjectMother.vehicle()),
             PageRequest.of(0, 10),
             1
         )
@@ -44,7 +44,7 @@ class VehicleServiceTest : BaseUnitTest() {
     @Test
     fun `getFilteredVehicles when given filters should return Vehicle page`() {
         val expected = PageImpl(
-            listOf(ObjectMother.vehicle),
+            listOf(ObjectMother.vehicle()),
             PageRequest.of(0, 10),
             1
         )
@@ -66,7 +66,7 @@ class VehicleServiceTest : BaseUnitTest() {
 
     @Test
     fun `getVehicleById when given vehicleId return Vehicle`() {
-        val expected = ObjectMother.vehicle
+        val expected = ObjectMother.vehicle()
         val result = vehicleService.getVehicleById("abc123")
         assertThat(result).isEqualTo(expected)
     }
@@ -80,16 +80,16 @@ class VehicleServiceTest : BaseUnitTest() {
 
     @Test
     fun `createVehicle when given VehicleRequest persist new Vehicle`() {
-        val expected = ObjectMother.vehicle
-        val result = vehicleService.createVehicle(ObjectMother.vehicleRequest)
+        val expected = ObjectMother.vehicle()
+        val result = vehicleService.createVehicle(ObjectMother.vehicleRequest())
         assertThat(result).isEqualTo(expected)
         verify(exactly = 1) { vehicleRepository.save(any()) }
     }
 
     @Test
     fun `updateVehicle when given existing Vehicle update and persist`() {
-        val expected = ObjectMother.vehicle
-        val result = vehicleService.updateVehicle("abc123", ObjectMother.vehicleRequest)
+        val expected = ObjectMother.vehicle()
+        val result = vehicleService.updateVehicle("abc123", ObjectMother.vehicleRequest())
         assertThat(result).isEqualTo(expected)
         verify(exactly = 1) { vehicleRepository.save(any()) }
     }
@@ -97,7 +97,7 @@ class VehicleServiceTest : BaseUnitTest() {
     @Test
     fun `updateVehicle when given Vehicle which does not exist throw VehicleNotFoundException`() {
         assertThrows<VehicleNotFoundException> {
-            vehicleService.updateVehicle("no123", ObjectMother.vehicleRequest)
+            vehicleService.updateVehicle("no123", ObjectMother.vehicleRequest())
         }
     }
 

@@ -15,20 +15,20 @@ import org.junit.jupiter.api.assertThrows
 class SellerServiceTest : BaseUnitTest() {
 
     private val sellerRepository = mockk<SellerRepository> {
-        every { findSellerById("1") } returns ObjectMother.seller
+        every { findSellerById("1") } returns ObjectMother.seller()
         every { findSellerById("null-id") } returns null
         every { deleteById("1") } just Runs
-        every { save(ObjectMother.sellerFromRequest) } returns ObjectMother.sellerFromRequest
+        every { save(ObjectMother.sellerFromRequest()) } returns ObjectMother.sellerFromRequest()
     }
     private val vehicleService = mockk<VehicleService> {
-        every { createVehicle(ObjectMother.vehicleRequest) } returns ObjectMother.vehicleRequest.toEntity()
+        every { createVehicle(ObjectMother.vehicleRequest()) } returns ObjectMother.vehicleRequest().toEntity()
     }
 
     private val sellerService = SellerService(sellerRepository, vehicleService)
 
     @Test
     fun `getSellerById when given sellerId return SellerResponse`() {
-        val expected = ObjectMother.seller
+        val expected = ObjectMother.seller()
         val result = sellerService.getSellerById("1")
         assertThat(result).isEqualTo(expected)
     }
@@ -42,14 +42,13 @@ class SellerServiceTest : BaseUnitTest() {
 
     @Test
     fun `createVehicleForSeller when given sellerId and vehicle request creates vehicle and adds it to seller and returns seller`() {
-        val vehicleRequest = ObjectMother.vehicleRequest
+        val vehicleRequest = ObjectMother.vehicleRequest()
         val sellerSlot = slot<Seller>()
-
         every { sellerRepository.save(capture(sellerSlot)) } returns mockk()
 
         sellerService.createVehicleForSeller("1", vehicleRequest)
-        val capturedVehicle = sellerSlot.captured.vehicles
 
+        val capturedVehicle = sellerSlot.captured.vehicles
         assertTrue(capturedVehicle.contains(vehicleRequest.toEntity().toVehicleInfo()))
     }
 
@@ -61,7 +60,7 @@ class SellerServiceTest : BaseUnitTest() {
 
     @Test
     fun `updateSeller when given sellerId and sellerRequest but seller does not exist throw SellerNotFoundException`() {
-        val sellerRequest = ObjectMother.sellerRequest.copy()
+        val sellerRequest = ObjectMother.sellerRequest()
         assertThrows<SellerNotFoundException> {
             sellerService.updateSeller("null-id", sellerRequest)
         }
@@ -69,11 +68,11 @@ class SellerServiceTest : BaseUnitTest() {
 
     @Test
     fun `updateSeller when given sellerId and sellerRequest persist updated seller`() {
-        val sellerRequest = ObjectMother.sellerRequest
-        val seller = ObjectMother.seller.copy(vehicles = mutableListOf())
+        val sellerRequest = ObjectMother.sellerRequest()
+        val seller = ObjectMother.seller().copy(vehicles = mutableListOf())
         every { sellerRepository.findSellerById("2") } returns seller
 
-        val expected = ObjectMother.sellerFromRequest
+        val expected = ObjectMother.sellerFromRequest()
         val result = sellerService.updateSeller("2", sellerRequest)
 
         assertThat(result).isEqualTo(expected)

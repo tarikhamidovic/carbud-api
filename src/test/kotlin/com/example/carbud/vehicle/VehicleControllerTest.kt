@@ -27,7 +27,7 @@ class VehicleControllerTest : BaseControllerTest() {
     @Test
     fun `getFilteredVehicle when given filters returns 200 and json`() {
         val page = PageImpl(
-            listOf(ObjectMother.vehicle),
+            listOf(ObjectMother.vehicle()),
             PageRequest.of(0, 10),
             1
         )
@@ -41,8 +41,8 @@ class VehicleControllerTest : BaseControllerTest() {
 
     @Test
     fun `getVehicleById when given id of existing vehicle should return 200 and json`() {
-        every { vehicleService.getVehicleById("abc123") } returns ObjectMother.vehicle
-        val expected = objectMapper.writeValueAsString(ObjectMother.vehicle)
+        every { vehicleService.getVehicleById("abc123") } returns ObjectMother.vehicle()
+        val expected = objectMapper.writeValueAsString(ObjectMother.vehicle())
 
         mockMvc.get("/vehicles/abc123")
             .andExpect {
@@ -63,7 +63,7 @@ class VehicleControllerTest : BaseControllerTest() {
 
     @Test
     fun `postVehicle when given VehicleRequest should return 201`() {
-        val request = ObjectMother.vehicleRequest
+        val request = ObjectMother.vehicleRequest()
         every { vehicleService.createVehicle(request) } returns request.toEntity()
 
         mockMvc
@@ -79,7 +79,7 @@ class VehicleControllerTest : BaseControllerTest() {
 
     @Test
     fun `updateVehicle when given VehicleRequest and vehicle which exists should return 204`() {
-        val request = ObjectMother.vehicleRequest
+        val request = ObjectMother.vehicleRequest()
         every { vehicleService.updateVehicle(any(), request) } returns request.toEntity()
 
         mockMvc
@@ -95,7 +95,7 @@ class VehicleControllerTest : BaseControllerTest() {
 
     @Test
     fun `updateVehicle when given VehicleRequest and vehicle not exists should return 404`() {
-        val request = ObjectMother.vehicleRequest
+        val request = ObjectMother.vehicleRequest()
         every { vehicleService.updateVehicle(any(), request) } throws VehicleNotFoundException("")
 
         mockMvc

@@ -24,8 +24,8 @@ class SellerControllerTest : BaseControllerTest() {
 
     @Test
     fun `getSellerBydId when given sellerId returns 200 and json`() {
-        every { sellerService.getSellerById("1") } returns ObjectMother.seller
-        val expected = objectMapper.writeValueAsString(ObjectMother.sellerResponse)
+        every { sellerService.getSellerById("1") } returns ObjectMother.seller()
+        val expected = objectMapper.writeValueAsString(ObjectMother.sellerResponse())
 
         mockMvc.get("/sellers/1")
             .andExpect {
@@ -46,10 +46,10 @@ class SellerControllerTest : BaseControllerTest() {
 
     @Test
     fun `updateSeller when given sellerId and sellerRequest returns 204`() {
-        every { sellerService.updateSeller("1", ObjectMother.sellerRequest) } returns ObjectMother.seller
+        every { sellerService.updateSeller("1", ObjectMother.sellerRequest()) } returns ObjectMother.seller()
 
         mockMvc.put("/sellers/1") {
-            content = objectMapper.writeValueAsString(ObjectMother.sellerRequest)
+            content = objectMapper.writeValueAsString(ObjectMother.sellerRequest())
             contentType = MediaType.APPLICATION_JSON
         }
             .andExpect {
