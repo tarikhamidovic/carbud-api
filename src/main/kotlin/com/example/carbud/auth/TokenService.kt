@@ -12,13 +12,13 @@ class TokenService(private val jwtEncoder: JwtEncoder) {
 
     fun generateToken(user: User): String {
         val now = Instant.now()
-        val scope = user.authorities.map { it.authority }
+        val roles = user.authorities.map { it.authority }
         val claims = JwtClaimsSet.builder()
-            .issuer("self")
+            .issuer("carbud")
             .issuedAt(now)
-            .expiresAt(now.plus(1, ChronoUnit.HOURS))
+            .expiresAt(now.plus(5, ChronoUnit.MINUTES))
             .subject(user.username)
-            .claim("scope", scope)
+            .claim("roles", roles)
             .build()
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue

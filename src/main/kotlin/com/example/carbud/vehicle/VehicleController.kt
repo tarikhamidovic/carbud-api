@@ -27,6 +27,8 @@ class VehicleController(private val vehicleService: VehicleService) {
     @GetMapping("/{vehicleId}")
     fun getVehicleById(@PathVariable vehicleId: String) = vehicleService.getVehicleById(vehicleId)
 
+
+    // mozda ne treba
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun postVehicle(@RequestBody vehicleRequest: VehicleRequest) {

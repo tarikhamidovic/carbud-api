@@ -25,4 +25,5 @@ data class Vehicle(
     val color: String,
     val doorCount: Int,
     val price: Int
+    // dodaj ovdje sellerId da referenciras vehicle na sellera
 )
