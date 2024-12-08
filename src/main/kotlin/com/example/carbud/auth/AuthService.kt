@@ -21,15 +21,15 @@ class AuthService(
     private val authenticationManager: AuthenticationManager
 ) {
     fun register(request: RegistrationRequest): String {
-        val existingUser = userRepository.findUserByEmail(request.username)
+        val existingUser = userRepository.findUserByUserName(request.username)
 
         if (existingUser != null) throw UserAlreadyExistsException(
-            "User with email: ${request.username} already exists"
+            "User with username: ${request.username} already exists"
         )
 
         val user = userRepository.save(
             User(
-                email = request.username,
+                userName = request.username,
                 uPassword = passwordEncoder.encode(request.password),
                 roles = setOf(Role.USER)
             )
@@ -41,8 +41,8 @@ class AuthService(
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(request.username, request.password)
         )
-        val user = userRepository.findUserByEmail(request.username)
-            ?: throw UserNotFoundException("User with email: ${request.username} not found")
+        val user = userRepository.findUserByUserName(request.username)
+            ?: throw UserNotFoundException("User with username: ${request.username} not found")
 
         return tokenService.generateToken(user)
     }

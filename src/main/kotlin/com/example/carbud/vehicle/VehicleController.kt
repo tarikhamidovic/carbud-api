@@ -1,5 +1,7 @@
 package com.example.carbud.vehicle
 
+import com.example.carbud.auth.SecurityService
+import com.example.carbud.auth.exceptions.UserMissingClaimException
 import com.example.carbud.vehicle.dto.VehicleRequest
 import com.example.carbud.vehicle.dto.VehicleResponse
 import org.springframework.data.domain.Page
@@ -17,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/vehicles")
-class VehicleController(private val vehicleService: VehicleService) {
+class VehicleController(
+    private val vehicleService: VehicleService,
+    private val securityService: SecurityService
+) {
 
     @GetMapping
     fun getFilteredVehicles(@RequestParam params: Map<String, String>): Page<VehicleResponse> {
@@ -27,21 +32,24 @@ class VehicleController(private val vehicleService: VehicleService) {
     @GetMapping("/{vehicleId}")
     fun getVehicleById(@PathVariable vehicleId: String) = vehicleService.getVehicleById(vehicleId)
 
-
-    // mozda ne treba
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun postVehicle(@RequestBody vehicleRequest: VehicleRequest) {
-        vehicleService.createVehicle(vehicleRequest)
+        val sellerId = securityService.sellerId ?:
+            throw UserMissingClaimException("Security context missing claim sellerId")
+
+        vehicleService.createVehicle(sellerId, vehicleRequest)
     }
 
     @PutMapping("/{vehicleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun updateVehicle(@PathVariable vehicleId: String, @RequestBody vehicleRequest: VehicleRequest) {
+    fun updateVehicleById(@PathVariable vehicleId: String, @RequestBody vehicleRequest: VehicleRequest) {
         vehicleService.updateVehicle(vehicleId, vehicleRequest)
     }
 
     @DeleteMapping("/{vehicleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteVehicleById(@PathVariable vehicleId: String) = vehicleService.deleteVehicleById(vehicleId)
+    fun deleteVehicleById(@PathVariable vehicleId: String) {
+        vehicleService.deleteVehicleById(vehicleId)
+    }
 }

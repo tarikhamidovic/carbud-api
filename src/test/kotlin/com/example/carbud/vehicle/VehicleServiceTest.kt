@@ -2,6 +2,7 @@ package com.example.carbud.vehicle
 
 import com.example.carbud.BaseUnitTest
 import com.example.carbud.manufacturer.ManufacturerService
+import com.example.carbud.seller.SellerService
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
 import io.mockk.*
@@ -23,12 +24,13 @@ class VehicleServiceTest : BaseUnitTest() {
     private val manufacturerService = mockk<ManufacturerService> {
         every { addModelToManufacturer(any(), any()) } just Runs
     }
+    private val sellerService = mockk<SellerService> {}
     private val mongoTemplate = mockk<MongoTemplate> {
         every { count(any(), Vehicle::class.java) } returns 1
         every { find(any(), Vehicle::class.java) } returns listOf(ObjectMother.vehicle())
     }
 
-    private val vehicleService = VehicleService(vehicleRepository, manufacturerService ,mongoTemplate)
+    private val vehicleService = VehicleService(vehicleRepository, manufacturerService, sellerService, mongoTemplate)
 
     @Test
     fun `getFilteredVehicles when page number not given should return page zero with Vehicle`() {
@@ -81,7 +83,10 @@ class VehicleServiceTest : BaseUnitTest() {
     @Test
     fun `createVehicle when given VehicleRequest persist new Vehicle`() {
         val expected = ObjectMother.vehicle()
-        val result = vehicleService.createVehicle(ObjectMother.vehicleRequest())
+
+        every { sellerService.addVehicleToSeller(expected.sellerId!!, expected) }
+
+        val result = vehicleService.createVehicle(expected.sellerId!!, ObjectMother.vehicleRequest())
         assertThat(result).isEqualTo(expected)
         verify(exactly = 1) { vehicleRepository.save(any()) }
     }

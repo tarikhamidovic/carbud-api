@@ -20,7 +20,7 @@ class AuthServiceTest : BaseUnitTest() {
     private val user = ObjectMother.user()
 
     private val userRepository = mockk<UserRepository> {
-        every { findUserByEmail("test@test.com") } returns null
+        every { findUserByUserName("test@test.com") } returns null
         every { save(user) } returns user
     }
     private val tokenService = mockk<TokenService> {
@@ -44,7 +44,7 @@ class AuthServiceTest : BaseUnitTest() {
 
     @Test
     fun `register when given registration request and user with email already exists throw UserAlreadyExistsException`() {
-        every { userRepository.findUserByEmail(user.username) } returns user
+        every { userRepository.findUserByUserName(user.username) } returns user
         val request = RegistrationRequest(username = user.username, password = user.password)
 
         assertThatExceptionOfType(UserAlreadyExistsException::class.java)
@@ -53,7 +53,7 @@ class AuthServiceTest : BaseUnitTest() {
 
     @Test
     fun `login when given login request generate token`() {
-        every { userRepository.findUserByEmail(user.username) } returns user
+        every { userRepository.findUserByUserName(user.username) } returns user
         val result = authService.login(LoginRequest(username = user.username, password = user.password))
         assertThat(result).isEqualTo("token")
     }

@@ -1,6 +1,7 @@
 package com.example.carbud.seller
 
 import com.example.carbud.BaseControllerTest
+import com.example.carbud.auth.SecurityService
 import com.example.carbud.seller.exceptions.SellerNotFoundException
 import com.example.carbud.utils.ObjectMother
 import com.ninjasquad.springmockk.MockkBean
@@ -21,6 +22,9 @@ class SellerControllerTest : BaseControllerTest() {
 
     @MockkBean
     private lateinit var sellerService: SellerService
+
+    @MockkBean
+    private lateinit var securityService: SecurityService
 
     @Test
     fun `getSellerBydId when given sellerId returns 200 and json`() {
@@ -54,6 +58,21 @@ class SellerControllerTest : BaseControllerTest() {
         }
             .andExpect {
                 status { isNoContent() }
+                content { string("") }
+            }
+    }
+
+    @Test
+    fun `createSeller when given sellerId and sellerRequest returns 204`() {
+        every { sellerService.createSeller("1", ObjectMother.sellerRequest()) } returns ObjectMother.seller()
+        every { securityService.userId } returns "1"
+
+        mockMvc.post("/sellers") {
+            content = objectMapper.writeValueAsString(ObjectMother.sellerRequest())
+            contentType = MediaType.APPLICATION_JSON
+        }
+            .andExpect {
+                status { isCreated() }
                 content { string("") }
             }
     }

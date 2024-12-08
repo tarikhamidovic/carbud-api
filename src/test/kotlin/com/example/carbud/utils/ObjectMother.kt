@@ -30,7 +30,8 @@ object ObjectMother {
             numberOfOwners = 1,
             color = "black",
             doorCount = 5,
-            price = 30000
+            price = 30000,
+            sellerId = "1"
         )
     }
 
@@ -114,7 +115,7 @@ object ObjectMother {
 
     val user = {
         User(
-            email = "test@test.com",
+            userName = "test@test.com",
             uPassword = "test",
             roles = setOf(Role.USER)
         )

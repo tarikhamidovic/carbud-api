@@ -16,7 +16,7 @@ class AuthenticationConfig(
     private val userRepository: UserRepository
 ) {
     @Bean
-    fun userDetailsService() = UserDetailsService { userRepository.findUserByEmail(it) }
+    fun userDetailsService() = UserDetailsService { userRepository.findUserByUserName(it) }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()

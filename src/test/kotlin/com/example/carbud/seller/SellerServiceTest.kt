@@ -1,15 +1,14 @@
 package com.example.carbud.seller
 
 import com.example.carbud.BaseUnitTest
+import com.example.carbud.seller.exceptions.SellerAssignedToUserException
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.seller.exceptions.SellerNotFoundException
 import com.example.carbud.vehicle.VehicleService
-import com.example.carbud.vehicle.toEntity
-import com.example.carbud.vehicle.toVehicleInfo
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows
 
 class SellerServiceTest : BaseUnitTest() {
@@ -21,7 +20,7 @@ class SellerServiceTest : BaseUnitTest() {
         every { save(ObjectMother.sellerFromRequest()) } returns ObjectMother.sellerFromRequest()
     }
     private val vehicleService = mockk<VehicleService> {
-        every { createVehicle(ObjectMother.vehicleRequest()) } returns ObjectMother.vehicleRequest().toEntity()
+        every { deleteVehiclesBySellerId("1") } just Runs
     }
 
     private val sellerService = SellerService(sellerRepository, vehicleService)
@@ -41,20 +40,29 @@ class SellerServiceTest : BaseUnitTest() {
     }
 
     @Test
-    fun `createVehicleForSeller when given sellerId and vehicle request creates vehicle and adds it to seller and returns seller`() {
-        val vehicleRequest = ObjectMother.vehicleRequest()
-        val sellerSlot = slot<Seller>()
-        every { sellerRepository.save(capture(sellerSlot)) } returns mockk()
+    fun `createSeller when given non-assigned userId and sellerRequest return Seller`() {
+        val seller = ObjectMother.sellerRequest().toEntity("1")
 
-        sellerService.createVehicleForSeller("1", vehicleRequest)
+        every { sellerRepository.findSellerByUserId("1")} returns null
+        every { sellerRepository.save(seller) } returns seller
 
-        val capturedVehicle = sellerSlot.captured.vehicles
-        assertTrue(capturedVehicle.contains(vehicleRequest.toEntity().toVehicleInfo()))
+        val result = sellerService.createSeller("1", ObjectMother.sellerRequest())
+
+        assertEquals(seller, result)
+    }
+
+    @Test
+    fun `createSeller when given userId and sellerRequest and user assigned to seller throws SellerAssignedToUserException`() {
+        every { sellerRepository.findSellerByUserId("0")} returns ObjectMother.seller()
+        assertThrows<SellerAssignedToUserException> {
+            sellerService.createSeller("0", ObjectMother.sellerRequest())
+        }
     }
 
     @Test
     fun `deleteSellerById when given sellerId deletes seller`() {
         sellerService.deleteSellerById("1")
+        verify { vehicleService.deleteVehiclesBySellerId("1") }
         verify { sellerRepository.deleteById("1") }
     }
 

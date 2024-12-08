@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SellerRepository : MongoRepository<Seller, String> {
     fun findSellerById(id: String): Seller?
+    fun findSellerByUserId(userId: String): Seller?
 }

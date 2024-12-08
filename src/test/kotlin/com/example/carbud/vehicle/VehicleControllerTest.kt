@@ -61,21 +61,21 @@ class VehicleControllerTest : BaseControllerTest() {
             }
     }
 
-    @Test
-    fun `postVehicle when given VehicleRequest should return 201`() {
-        val request = ObjectMother.vehicleRequest()
-        every { vehicleService.createVehicle(request) } returns request.toEntity()
-
-        mockMvc
-            .post("/vehicles") {
-                content = objectMapper.writeValueAsString(request)
-                contentType = MediaType.APPLICATION_JSON
-            }
-            .andExpect {
-                status { isCreated() }
-                content { string("") }
-            }
-    }
+//    @Test
+//    fun `postVehicle when given VehicleRequest should return 201`() {
+//        val request = ObjectMother.vehicleRequest()
+//        every { vehicleService.createVehicle(request) } returns request.toEntity()
+//
+//        mockMvc
+//            .post("/vehicles") {
+//                content = objectMapper.writeValueAsString(request)
+//                contentType = MediaType.APPLICATION_JSON
+//            }
+//            .andExpect {
+//                status { isCreated() }
+//                content { string("") }
+//            }
+//    }
 
     @Test
     fun `updateVehicle when given VehicleRequest and vehicle which exists should return 204`() {

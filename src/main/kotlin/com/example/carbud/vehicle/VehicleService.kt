@@ -1,11 +1,16 @@
 package com.example.carbud.vehicle
 
+import com.example.carbud.auth.SecurityService
+import com.example.carbud.auth.exceptions.ActionNotAllowedException
+import com.example.carbud.auth.exceptions.UserMissingClaimException
 import com.example.carbud.manufacturer.ManufacturerService
+import com.example.carbud.seller.SellerService
 import com.example.carbud.vehicle.dto.VehicleRequest
 import com.example.carbud.vehicle.dto.VehicleResponse
 import com.example.carbud.vehicle.enums.FuelType
 import com.example.carbud.vehicle.enums.Transmission
 import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -18,7 +23,9 @@ import org.springframework.stereotype.Service
 class VehicleService(
     private val vehicleRepository: VehicleRepository,
     private val manufacturerService: ManufacturerService,
-    private val mongoTemplate: MongoTemplate
+    private val sellerService: SellerService,
+    private val mongoTemplate: MongoTemplate,
+    private val securityService: SecurityService
 ) {
     companion object {
         private const val PAGE = "page"
@@ -85,6 +92,15 @@ class VehicleService(
     fun updateVehicle(vehicleId: String, vehicleRequest: VehicleRequest): Vehicle {
         val existingVehicle = getVehicleById(vehicleId)
 
+        val sellerId = securityService.sellerId
+            ?: throw UserMissingClaimException("Security context missing claim sellerId")
+
+        if (existingVehicle.sellerId != sellerId) {
+            if (!securityService.isAdmin()) {
+                throw ActionNotAllowedException("Seller with id: $sellerId not authorized to edit vehicle with id: ${existingVehicle.id}")
+            }
+        }
+
         val updatedVehicle = existingVehicle.copy(
             title = vehicleRequest.title,
             manufacturer = vehicleRequest.manufacturer,
@@ -103,10 +119,29 @@ class VehicleService(
         return vehicleRepository.save(updatedVehicle)
     }
 
-    fun createVehicle(vehicleRequest: VehicleRequest): Vehicle {
+    fun createVehicle(sellerId: String, vehicleRequest: VehicleRequest): Vehicle {
+        val vehicle = vehicleRepository.save(vehicleRequest.toEntity(sellerId = sellerId))
         manufacturerService.addModelToManufacturer(vehicleRequest.manufacturer, vehicleRequest.model)
-        return vehicleRepository.save(vehicleRequest.toEntity())
+        sellerService.addVehicleToSeller(sellerId, vehicle)
+
+        return vehicle
     }
 
-    fun deleteVehicleById(vehicleId: String) = vehicleRepository.deleteById(vehicleId)
+    fun deleteVehiclesBySellerId(sellerId: String) = vehicleRepository.deleteVehicleBySellerId(sellerId)
+
+    fun deleteVehicleById(vehicleId: String) {
+        val vehicle = getVehicleById(vehicleId)
+
+        val sellerId = securityService.sellerId
+            ?: throw UserMissingClaimException("Security context missing claim sellerId")
+
+        if (vehicle.sellerId != sellerId) {
+            if (!securityService.isAdmin()) {
+                throw ActionNotAllowedException("User not authorized to delete vehicle with id: ${vehicle.id}")
+            }
+        }
+
+        sellerService.removeVehicleFromSeller(vehicle.sellerId, vehicle)
+        vehicleRepository.deleteById(vehicleId)
+    }
 }

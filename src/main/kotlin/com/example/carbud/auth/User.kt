@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails
 data class User(
     @Id
     val id: String? = null,
-    private val email: String,
+    private val userName: String,
     private val uPassword: String,
     val roles: Set<Role> = emptySet()
 ) : UserDetails {
@@ -20,7 +20,7 @@ data class User(
 
     override fun getPassword() = uPassword
 
-    override fun getUsername() = email
+    override fun getUsername() = userName
 
     override fun isAccountNonExpired() = true
 
