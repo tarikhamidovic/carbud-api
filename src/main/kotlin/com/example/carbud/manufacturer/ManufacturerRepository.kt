@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ManufacturerRepository : MongoRepository<Manufacturer, String> {
     fun findManufacturerByName(name: String): Manufacturer?
+    fun deleteManufacturerByName(name: String)
 }

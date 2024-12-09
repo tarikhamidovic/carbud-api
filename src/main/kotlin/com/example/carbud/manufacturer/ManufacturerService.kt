@@ -1,5 +1,6 @@
 package com.example.carbud.manufacturer
 
+import com.example.carbud.manufacturer.dto.ManufacturerRequest
 import com.example.carbud.manufacturer.exceptions.ManufacturerNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -30,5 +31,20 @@ class ManufacturerService(private val manufacturerRepository: ManufacturerReposi
     fun createManufacturer(manufacturerName: String, models: MutableSet<String>) {
         val manufacturer = Manufacturer(manufacturerName, models)
         manufacturerRepository.save(manufacturer)
+    }
+
+    fun updateManufacturer(manufacturerRequest: ManufacturerRequest): Manufacturer {
+        val existingManufacturer = getManufacturerByName(manufacturerRequest.name)
+
+        val updatedManufacturer = existingManufacturer.copy(
+            name = manufacturerRequest.name,
+            models = manufacturerRequest.models
+        )
+
+        return manufacturerRepository.save(updatedManufacturer)
+    }
+
+    fun deleteManufacturer(manufacturerName: String) {
+        manufacturerRepository.deleteManufacturerByName(manufacturerName)
     }
 }
