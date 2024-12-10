@@ -71,9 +71,9 @@ class VehicleServiceTest : BaseUnitTest() {
                 "fuelType" to "Petrol",
                 "transmission" to "Automatic",
                 "color" to "black",
-                "distance" to "100",
+                "distancelt" to "100",
                 "firstRegistration" to "2020",
-                "price" to "30000"
+                "pricelt" to "30000"
             )
         )
         assertThat(result).isEqualTo(expected)

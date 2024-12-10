@@ -4,7 +4,7 @@ import com.example.carbud.BaseUnitTest
 import com.example.carbud.seller.exceptions.SellerAssignedToUserException
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.seller.exceptions.SellerNotFoundException
-import com.example.carbud.vehicle.VehicleService
+import com.example.carbud.vehicle.toVehicleInfo
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
@@ -24,49 +24,19 @@ class SellerServiceTest : BaseUnitTest() {
 
     @Test
     fun `getSellerById when given sellerId return SellerResponse`() {
-        val expected = ObjectMother.seller()
+        val seller = ObjectMother.seller()
+        every { sellerRepository.findSellerById("1") } returns seller
+
         val result = sellerService.getSellerById("1")
-        assertThat(result).isEqualTo(expected)
+        assertThat(result).isEqualTo(seller)
     }
 
     @Test
     fun `getSellerById when given sellerId and no seller found throws SellerNotFoundException`() {
+        every { sellerRepository.findSellerById("null-id") } returns null
+
         assertThrows<SellerNotFoundException> {
             sellerService.getSellerById("null-id")
-        }
-    }
-
-    @Test
-    fun `createSeller when given non-assigned userId and sellerRequest return Seller`() {
-        val seller = ObjectMother.sellerRequest().toEntity("1")
-
-        every { sellerRepository.findSellerByUserId("1")} returns null
-        every { sellerRepository.save(seller) } returns seller
-
-        val result = sellerService.createSeller("1", ObjectMother.sellerRequest())
-
-        assertEquals(seller, result)
-    }
-
-    @Test
-    fun `createSeller when given userId and sellerRequest and user assigned to seller throws SellerAssignedToUserException`() {
-        every { sellerRepository.findSellerByUserId("0")} returns ObjectMother.seller()
-        assertThrows<SellerAssignedToUserException> {
-            sellerService.createSeller("0", ObjectMother.sellerRequest())
-        }
-    }
-
-    @Test
-    fun `deleteSellerById when given sellerId deletes seller`() {
-        sellerService.deleteSellerById("1")
-        verify { sellerRepository.deleteById("1") }
-    }
-
-    @Test
-    fun `updateSeller when given sellerId and sellerRequest but seller does not exist throw SellerNotFoundException`() {
-        val sellerRequest = ObjectMother.sellerRequest()
-        assertThrows<SellerNotFoundException> {
-            sellerService.updateSeller("null-id", sellerRequest)
         }
     }
 
@@ -81,5 +51,70 @@ class SellerServiceTest : BaseUnitTest() {
 
         assertThat(result).isEqualTo(expected)
         verify { sellerRepository.save(any()) }
+    }
+
+    @Test
+    fun `updateSeller when given sellerId and sellerRequest but seller does not exist throw SellerNotFoundException`() {
+        val sellerRequest = ObjectMother.sellerRequest()
+        assertThrows<SellerNotFoundException> {
+            sellerService.updateSeller("null-id", sellerRequest)
+        }
+    }
+
+    @Test
+    fun `createSeller when given non-assigned userId and sellerRequest return Seller`() {
+        val seller = ObjectMother.sellerRequest().toEntity("1")
+
+        every { sellerRepository.findSellerByUserId("1")} returns null
+        every { sellerRepository.save(seller) } returns seller
+
+        val result = sellerService.createSeller("1", ObjectMother.sellerRequest())
+        assertEquals(seller, result)
+    }
+
+    @Test
+    fun `createSeller when given userId and sellerRequest and user assigned to seller throws SellerAssignedToUserException`() {
+        val seller = ObjectMother.seller()
+        val request = ObjectMother.sellerRequest()
+
+        every { sellerRepository.findSellerByUserId("0")} returns seller
+
+        assertThrows<SellerAssignedToUserException> {
+            sellerService.createSeller("0", request)
+        }
+    }
+
+    @Test
+    fun `addVehicleToSeller when given sellerId and vehicle persists vehicle to seller vehicle list`() {
+        val seller = ObjectMother.seller()
+        val vehicle = ObjectMother.vehicle()
+
+        every { sellerRepository.findSellerById("1") } returns seller
+        every { sellerRepository.save(any()) } returns mockk()
+
+        sellerService.addVehicleToSeller("1", vehicle)
+
+        assert(seller.vehicles.contains(vehicle.toVehicleInfo()))
+        verify { sellerRepository.save(seller) }
+    }
+
+    @Test
+    fun `removeVehicleFromSeller when given sellerId and vehicle removes vehicle from seller vehicle list`() {
+        val seller = ObjectMother.seller()
+        val vehicle = ObjectMother.vehicle()
+
+        every { sellerRepository.findSellerById("1") } returns seller
+        every { sellerRepository.save(any()) } returns mockk()
+
+        sellerService.removeVehicleFromSeller("1", vehicle)
+
+        assert(!seller.vehicles.contains(vehicle.toVehicleInfo()))
+        verify { sellerRepository.save(seller) }
+    }
+
+    @Test
+    fun `deleteSellerById when given sellerId deletes seller`() {
+        sellerService.deleteSellerById("1")
+        verify { sellerRepository.deleteById("1") }
     }
 }

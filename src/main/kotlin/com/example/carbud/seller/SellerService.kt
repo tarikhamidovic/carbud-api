@@ -4,8 +4,6 @@ import com.example.carbud.seller.dto.SellerRequest
 import com.example.carbud.seller.exceptions.SellerAssignedToUserException
 import com.example.carbud.seller.exceptions.SellerNotFoundException
 import com.example.carbud.vehicle.Vehicle
-import com.example.carbud.vehicle.VehicleService
-import com.example.carbud.vehicle.dto.VehicleRequest
 import com.example.carbud.vehicle.toVehicleInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

@@ -1,12 +1,10 @@
 package com.example.carbud.seller
 
 import com.example.carbud.auth.SecurityService
-import com.example.carbud.auth.enums.Role
 import com.example.carbud.auth.exceptions.ActionNotAllowedException
 import com.example.carbud.auth.exceptions.UserMissingClaimException
 import com.example.carbud.seller.dto.SellerRequest
 import com.example.carbud.vehicle.VehicleService
-import com.example.carbud.vehicle.dto.VehicleRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
