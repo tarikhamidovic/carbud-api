@@ -1,6 +1,7 @@
 package com.example.carbud.vehicle
 
 import com.example.carbud.BaseControllerTest
+import com.example.carbud.auth.SecurityService
 import com.example.carbud.utils.ObjectMother
 import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
 import com.ninjasquad.springmockk.MockkBean
@@ -23,6 +24,9 @@ class VehicleControllerTest : BaseControllerTest() {
 
     @MockkBean
     private lateinit var vehicleService: VehicleService
+
+    @MockkBean
+    private lateinit var securityService: SecurityService
 
     @Test
     fun `getFilteredVehicle when given filters returns 200 and json`() {
@@ -61,26 +65,44 @@ class VehicleControllerTest : BaseControllerTest() {
             }
     }
 
-//    @Test
-//    fun `postVehicle when given VehicleRequest should return 201`() {
-//        val request = ObjectMother.vehicleRequest()
-//        every { vehicleService.createVehicle(request) } returns request.toEntity()
-//
-//        mockMvc
-//            .post("/vehicles") {
-//                content = objectMapper.writeValueAsString(request)
-//                contentType = MediaType.APPLICATION_JSON
-//            }
-//            .andExpect {
-//                status { isCreated() }
-//                content { string("") }
-//            }
-//    }
+    @Test
+    fun `postVehicle when given VehicleRequest should return 201`() {
+        val request = ObjectMother.vehicleRequest()
+        every { vehicleService.createVehicle(any() ,request) } returns request.toEntity("1")
+        every { securityService.sellerId } returns "abc123"
+
+        mockMvc
+            .post("/vehicles") {
+                content = objectMapper.writeValueAsString(request)
+                contentType = MediaType.APPLICATION_JSON
+            }
+            .andExpect {
+                status { isCreated() }
+                content { string("") }
+            }
+    }
 
     @Test
-    fun `updateVehicle when given VehicleRequest and vehicle which exists should return 204`() {
+    fun `postVehicle when given VehicleRequest but no sellerId claim in auth token should return 201`() {
         val request = ObjectMother.vehicleRequest()
-        every { vehicleService.updateVehicle(any(), request) } returns request.toEntity()
+        every { vehicleService.createVehicle(any() ,request) } returns request.toEntity("1")
+        every { securityService.sellerId } returns null
+
+        mockMvc
+            .post("/vehicles") {
+                content = objectMapper.writeValueAsString(request)
+                contentType = MediaType.APPLICATION_JSON
+            }
+            .andExpect {
+                status { isForbidden() }
+                content { string("") }
+            }
+    }
+
+    @Test
+    fun `updateVehicle when given vehicleId and VehicleRequest and vehicle exists should return 204`() {
+        val request = ObjectMother.vehicleRequest()
+        every { vehicleService.updateVehicle(any(), request) } returns request.toEntity("1")
 
         mockMvc
             .put("/vehicles/abc123") {
@@ -94,7 +116,7 @@ class VehicleControllerTest : BaseControllerTest() {
     }
 
     @Test
-    fun `updateVehicle when given VehicleRequest and vehicle not exists should return 404`() {
+    fun `updateVehicle when given vehicleId and VehicleRequest and vehicle not exists should return 404`() {
         val request = ObjectMother.vehicleRequest()
         every { vehicleService.updateVehicle(any(), request) } throws VehicleNotFoundException("")
 

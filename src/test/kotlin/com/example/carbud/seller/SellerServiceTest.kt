@@ -19,11 +19,8 @@ class SellerServiceTest : BaseUnitTest() {
         every { deleteById("1") } just Runs
         every { save(ObjectMother.sellerFromRequest()) } returns ObjectMother.sellerFromRequest()
     }
-    private val vehicleService = mockk<VehicleService> {
-        every { deleteVehiclesBySellerId("1") } just Runs
-    }
 
-    private val sellerService = SellerService(sellerRepository, vehicleService)
+    private val sellerService = SellerService(sellerRepository)
 
     @Test
     fun `getSellerById when given sellerId return SellerResponse`() {
@@ -62,7 +59,6 @@ class SellerServiceTest : BaseUnitTest() {
     @Test
     fun `deleteSellerById when given sellerId deletes seller`() {
         sellerService.deleteSellerById("1")
-        verify { vehicleService.deleteVehiclesBySellerId("1") }
         verify { sellerRepository.deleteById("1") }
     }
 

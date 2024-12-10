@@ -89,6 +89,14 @@ class VehicleService(
             ?: throw VehicleNotFoundException("Vehicle with provided id: $vehicleId does not exist")
     }
 
+    fun createVehicle(sellerId: String, vehicleRequest: VehicleRequest): Vehicle {
+        val vehicle = vehicleRepository.save(vehicleRequest.toEntity(sellerId = sellerId))
+        manufacturerService.addModelToManufacturer(vehicleRequest.manufacturer, vehicleRequest.model)
+        sellerService.addVehicleToSeller(sellerId, vehicle)
+
+        return vehicle
+    }
+
     fun updateVehicle(vehicleId: String, vehicleRequest: VehicleRequest): Vehicle {
         val existingVehicle = getVehicleById(vehicleId)
 
@@ -117,14 +125,6 @@ class VehicleService(
             price = vehicleRequest.price
         )
         return vehicleRepository.save(updatedVehicle)
-    }
-
-    fun createVehicle(sellerId: String, vehicleRequest: VehicleRequest): Vehicle {
-        val vehicle = vehicleRepository.save(vehicleRequest.toEntity(sellerId = sellerId))
-        manufacturerService.addModelToManufacturer(vehicleRequest.manufacturer, vehicleRequest.model)
-        sellerService.addVehicleToSeller(sellerId, vehicle)
-
-        return vehicle
     }
 
     fun deleteVehiclesBySellerId(sellerId: String) = vehicleRepository.deleteVehicleBySellerId(sellerId)
