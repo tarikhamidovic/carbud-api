@@ -21,11 +21,9 @@ class AuthControllerTest : BaseControllerTest() {
     @MockkBean
     private lateinit var authService: AuthService
 
-    private val loginRequest = ObjectMother.loginRequest()
-    private val registrationRequest = ObjectMother.registrationRequest()
-
     @Test
     fun `login when given request body calls login`() {
+        val loginRequest = ObjectMother.loginRequest()
         every { authService.login(loginRequest) } returns "token"
 
         mockMvc.post("/login") {
@@ -42,6 +40,7 @@ class AuthControllerTest : BaseControllerTest() {
 
     @Test
     fun `register when given request body call register`() {
+        val registrationRequest = ObjectMother.registrationRequest()
         every { authService.register(registrationRequest) } returns "token"
 
         mockMvc.post("/register") {
