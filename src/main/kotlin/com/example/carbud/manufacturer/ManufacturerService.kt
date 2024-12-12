@@ -29,8 +29,11 @@ class ManufacturerService(private val manufacturerRepository: ManufacturerReposi
     }
 
     fun createManufacturer(manufacturerName: String, models: MutableSet<String>) {
-        val manufacturer = Manufacturer(manufacturerName, models)
-        manufacturerRepository.save(manufacturer)
+        if (manufacturerRepository.findManufacturerByName(manufacturerName) == null) {
+            manufacturerRepository.save(
+                Manufacturer(manufacturerName, models)
+            )
+        }
     }
 
     fun updateManufacturer(manufacturerRequest: ManufacturerRequest): Manufacturer {

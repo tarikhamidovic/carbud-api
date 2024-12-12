@@ -5,6 +5,7 @@ import com.example.carbud.auth.dto.LoginRequest
 import com.example.carbud.auth.dto.RegistrationRequest
 import com.example.carbud.auth.enums.Role
 import com.example.carbud.manufacturer.Manufacturer
+import com.example.carbud.manufacturer.dto.ManufacturerRequest
 import com.example.carbud.seller.Seller
 import com.example.carbud.seller.dto.SellerRequest
 import com.example.carbud.seller.toResponse
@@ -123,6 +124,13 @@ object ObjectMother {
 
     val manufacturer = {
         Manufacturer(
+            name = "Audi",
+            models = mutableSetOf("A1", "A2", "A3", "A4", "A5", "A6", "A7")
+        )
+    }
+
+    val manufacturerRequest = {
+        ManufacturerRequest(
             name = "Audi",
             models = mutableSetOf("A1", "A2", "A3", "A4", "A5", "A6", "A7")
         )

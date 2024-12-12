@@ -21,7 +21,7 @@ class ManufacturerController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun creteManufacturer(@RequestBody manufacturer: ManufacturerResponse) {
+    fun creteManufacturer(@RequestBody manufacturer: ManufacturerRequest) {
         if (!securityService.isAdmin()) { throw ActionNotAllowedException("User is not admin") }
         manufacturerService.createManufacturer(manufacturer.name, manufacturer.models)
     }
