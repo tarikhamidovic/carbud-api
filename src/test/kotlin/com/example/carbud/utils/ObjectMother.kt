@@ -122,6 +122,15 @@ object ObjectMother {
         )
     }
 
+    val registeredUser = {
+        User(
+            id = "userid123",
+            userName = "test",
+            uPassword = "test",
+            roles = setOf(Role.USER)
+        )
+    }
+
     val manufacturer = {
         Manufacturer(
             name = "Audi",

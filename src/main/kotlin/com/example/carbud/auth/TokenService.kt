@@ -38,7 +38,7 @@ class TokenService(
                 claimsBuilder.claim(SELLER_ID, sellerId)
             }
         }
-        val claims = claimsBuilder.build()
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
+        val claims = JwtEncoderParameters.from(claimsBuilder.build())
+        return jwtEncoder.encode(claims).tokenValue
     }
 }
