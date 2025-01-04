@@ -1,10 +1,14 @@
 package com.example.carbud.auth
 
+import com.example.carbud.auth.dto.ChangePasswordRequest
 import com.example.carbud.auth.dto.LoginRequest
 import com.example.carbud.auth.dto.RegistrationRequest
 import com.example.carbud.auth.enums.Role
+import com.example.carbud.auth.exceptions.IncorrectOldPasswordException
 import com.example.carbud.auth.exceptions.UserAlreadyExistsException
 import com.example.carbud.auth.exceptions.UserNotFoundException
+import com.example.carbud.seller.SellerService
+import com.example.carbud.seller.dto.SellerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
@@ -17,10 +21,11 @@ import org.springframework.stereotype.Service
 class AuthService(
     private val userRepository: UserRepository,
     private val tokenService: TokenService,
+    private val sellerService: SellerService,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager
 ) {
-    fun register(request: RegistrationRequest): String {
+    fun register(request: RegistrationRequest) {
         val existingUser = userRepository.findUserByUserName(request.username)
 
         if (existingUser != null) throw UserAlreadyExistsException(
@@ -34,7 +39,18 @@ class AuthService(
                 roles = setOf(Role.USER)
             )
         )
-        return tokenService.generateToken(user)
+
+        sellerService.createSeller(
+            user.id!!,
+            SellerRequest(
+                firstName = request.firstName,
+                lastName = request.lastName,
+                userName = request.username,
+                phoneNumber = request.phoneNumber,
+                email = request.email,
+                location = request.location
+            )
+        )
     }
 
     fun login(request: LoginRequest): String {

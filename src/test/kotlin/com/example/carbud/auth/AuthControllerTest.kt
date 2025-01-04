@@ -1,9 +1,12 @@
 package com.example.carbud.auth
 
 import com.example.carbud.BaseControllerTest
+import com.example.carbud.auth.dto.ChangePasswordRequest
 import com.example.carbud.utils.ObjectMother
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,15 +44,14 @@ class AuthControllerTest : BaseControllerTest() {
     @Test
     fun `register when given request body call register`() {
         val registrationRequest = ObjectMother.registrationRequest()
-        every { authService.register(registrationRequest) } returns "token"
+        every { authService.register(registrationRequest) } just Runs
 
         mockMvc.post("/register") {
             content = objectMapper.writeValueAsString(registrationRequest)
             contentType = MediaType.APPLICATION_JSON
         }
             .andExpect {
-                status { isOk() }
-                content { string("token") }
+                status { isCreated() }
             }
 
         verify { authService.register(registrationRequest) }

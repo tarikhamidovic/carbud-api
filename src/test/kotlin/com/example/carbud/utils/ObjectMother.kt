@@ -109,8 +109,13 @@ object ObjectMother {
 
     val registrationRequest = {
         RegistrationRequest(
-            username = "test@test.com",
-            password = "test"
+            username = "test-user",
+            password = "test",
+            firstName = "test-name",
+            lastName = "test-last",
+            phoneNumber = "1234",
+            email = "test@test.com",
+            location = "Bosnia"
         )
     }
 
