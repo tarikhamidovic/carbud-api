@@ -1,9 +1,6 @@
 package com.example.carbud.config
 
-import com.example.carbud.auth.exceptions.ActionNotAllowedException
-import com.example.carbud.auth.exceptions.UserAlreadyExistsException
-import com.example.carbud.auth.exceptions.UserMissingClaimException
-import com.example.carbud.auth.exceptions.UserNotFoundException
+import com.example.carbud.auth.exceptions.*
 import com.example.carbud.manufacturer.exceptions.ManufacturerNotFoundException
 import com.example.carbud.seller.exceptions.SellerAssignedToUserException
 import com.example.carbud.seller.exceptions.SellerNotFoundException
@@ -63,6 +60,11 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(SellerAssignedToUserException::class)
     fun handleSellerAssignedToUserException(ex: SellerAssignedToUserException) =
         ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ex.message?.let { ApiErrorResponse(it) })
+
+    @ExceptionHandler(IncorrectOldPasswordException::class)
+    fun handleIncorrectOldPasswordException(ex: IncorrectOldPasswordException) =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ex.message?.let { ApiErrorResponse(it) })
 
     data class ApiErrorResponse(val message: String)

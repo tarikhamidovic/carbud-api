@@ -2,6 +2,7 @@ package com.example.carbud.auth
 
 import com.example.carbud.auth.enums.Role
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails
 data class User(
     @Id
     val id: String? = null,
+    @Indexed
     private val userName: String,
     private val uPassword: String,
     val roles: Set<Role> = emptySet()
