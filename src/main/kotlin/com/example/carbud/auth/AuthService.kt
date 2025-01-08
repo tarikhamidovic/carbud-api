@@ -25,6 +25,8 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager
 ) {
+
+    // TODO: Might need transactional annotation here as well?
     fun register(request: RegistrationRequest) {
         val existingUser = userRepository.findUserByUserName(request.username)
 

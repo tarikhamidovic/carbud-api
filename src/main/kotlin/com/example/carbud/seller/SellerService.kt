@@ -50,6 +50,13 @@ class SellerService(
         return sellerRepository.save(seller)
     }
 
+    // TODO: Add unit tests for this method
+    fun updateVehicleForSeller(sellerId: String, vehicle: Vehicle): Seller {
+        val seller = getSellerById(sellerId)
+        seller.vehicles.replaceAll { if (it.id == vehicle.id) vehicle.toVehicleInfo() else it }
+        return sellerRepository.save(seller)
+    }
+
     fun removeVehicleFromSeller(sellerId: String, vehicle: Vehicle): Seller {
         val seller = getSellerById(sellerId)
         seller.vehicles.remove(vehicle.toVehicleInfo())

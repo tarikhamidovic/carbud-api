@@ -6,11 +6,9 @@ import com.example.carbud.auth.exceptions.UserMissingClaimException
 import com.example.carbud.manufacturer.ManufacturerService
 import com.example.carbud.seller.SellerService
 import com.example.carbud.vehicle.dto.VehicleRequest
-import com.example.carbud.vehicle.dto.VehicleResponse
 import com.example.carbud.vehicle.enums.FuelType
 import com.example.carbud.vehicle.enums.Transmission
 import com.example.carbud.vehicle.exceptions.VehicleNotFoundException
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -18,6 +16,7 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class VehicleService(
@@ -89,6 +88,7 @@ class VehicleService(
             ?: throw VehicleNotFoundException("Vehicle with provided id: $vehicleId does not exist")
     }
 
+    @Transactional
     fun createVehicle(sellerId: String, vehicleRequest: VehicleRequest): Vehicle {
         val vehicle = vehicleRepository.save(vehicleRequest.toEntity(sellerId = sellerId))
         manufacturerService.addModelToManufacturer(vehicleRequest.manufacturer, vehicleRequest.model)
@@ -97,6 +97,8 @@ class VehicleService(
         return vehicle
     }
 
+    // TODO: Correct unit tests here
+    @Transactional
     fun updateVehicle(vehicleId: String, vehicleRequest: VehicleRequest): Vehicle {
         val existingVehicle = getVehicleById(vehicleId)
 
@@ -124,11 +126,13 @@ class VehicleService(
             doorCount = vehicleRequest.doorCount,
             price = vehicleRequest.price
         )
+        sellerService.updateVehicleForSeller(sellerId, updatedVehicle)
         return vehicleRepository.save(updatedVehicle)
     }
 
     fun deleteVehiclesBySellerId(sellerId: String) = vehicleRepository.deleteVehicleBySellerId(sellerId)
 
+    @Transactional
     fun deleteVehicleById(vehicleId: String) {
         val vehicle = getVehicleById(vehicleId)
 

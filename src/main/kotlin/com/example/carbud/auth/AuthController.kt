@@ -16,6 +16,4 @@ class AuthController(
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@RequestBody registrationRequest: RegistrationRequest) = authService.register(registrationRequest)
-
-    // TODO: check exceptions for change password, add index to username, transactional, invalidate tokens with redis, init script
 }
