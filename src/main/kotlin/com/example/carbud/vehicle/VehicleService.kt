@@ -97,7 +97,6 @@ class VehicleService(
         return vehicle
     }
 
-    // TODO: Correct unit tests here
     @Transactional
     fun updateVehicle(vehicleId: String, vehicleRequest: VehicleRequest): Vehicle {
         val existingVehicle = getVehicleById(vehicleId)

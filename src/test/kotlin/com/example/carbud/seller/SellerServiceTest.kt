@@ -99,17 +99,32 @@ class SellerServiceTest : BaseUnitTest() {
     }
 
     @Test
-    fun `removeVehicleFromSeller when given sellerId and vehicle removes vehicle from seller vehicle list`() {
-        val seller = ObjectMother.seller()
+    fun `updateVehicleForSeller when given sellerId and vehicle updates vehicle associated to seller`() {
         val vehicle = ObjectMother.vehicle()
+        val seller = ObjectMother.seller().copy(vehicles = mutableListOf(vehicle.toVehicleInfo()))
 
         every { sellerRepository.findSellerById("1") } returns seller
-        every { sellerRepository.save(any()) } returns mockk()
+        every { sellerRepository.save(any()) } returns seller
 
-        sellerService.removeVehicleFromSeller("1", vehicle)
+        val updatedVehicle = vehicle.copy(title = "modified test title")
+        val result = sellerService.updateVehicleForSeller("1", updatedVehicle)
+
+        assert(result.vehicles.contains(updatedVehicle.toVehicleInfo()))
+        verify { sellerRepository.save(result) }
+    }
+
+    @Test
+    fun `removeVehicleFromSeller when given sellerId and vehicle removes vehicle from seller vehicle list`() {
+        val vehicle = ObjectMother.vehicle()
+        val seller = ObjectMother.seller().copy(vehicles = mutableListOf(vehicle.toVehicleInfo()))
+
+        every { sellerRepository.findSellerById("1") } returns seller
+        every { sellerRepository.save(any()) } returns seller.copy(vehicles = mutableListOf())
+
+        val result = sellerService.removeVehicleFromSeller("1", vehicle)
 
         assert(!seller.vehicles.contains(vehicle.toVehicleInfo()))
-        verify { sellerRepository.save(seller) }
+        verify { sellerRepository.save(result) }
     }
 
     @Test

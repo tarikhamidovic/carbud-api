@@ -1,21 +1,17 @@
 package com.example.carbud.auth
 
-import com.example.carbud.auth.dto.ChangePasswordRequest
 import com.example.carbud.auth.dto.LoginRequest
 import com.example.carbud.auth.dto.RegistrationRequest
 import com.example.carbud.auth.enums.Role
-import com.example.carbud.auth.exceptions.IncorrectOldPasswordException
 import com.example.carbud.auth.exceptions.UserAlreadyExistsException
 import com.example.carbud.auth.exceptions.UserNotFoundException
 import com.example.carbud.seller.SellerService
 import com.example.carbud.seller.dto.SellerRequest
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(
@@ -26,7 +22,7 @@ class AuthService(
     private val authenticationManager: AuthenticationManager
 ) {
 
-    // TODO: Might need transactional annotation here as well?
+    @Transactional
     fun register(request: RegistrationRequest) {
         val existingUser = userRepository.findUserByUserName(request.username)
 
