@@ -27,7 +27,7 @@ class TokenService(
         val claimsBuilder = JwtClaimsSet.builder()
             .issuer("carbud")
             .issuedAt(now)
-            .expiresAt(now.plus(5, ChronoUnit.MINUTES))
+            .expiresAt(now.plus(15, ChronoUnit.MINUTES))
             .subject(user.username)
             .claim(USER_ID, user.id)
             .claim(ROLES, roles)

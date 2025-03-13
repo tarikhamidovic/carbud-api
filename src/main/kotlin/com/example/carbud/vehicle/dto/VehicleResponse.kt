@@ -1,6 +1,7 @@
 package com.example.carbud.vehicle.dto
 
 data class VehicleResponse(
+    val id: String?,
     val title: String,
     val manufacturer: String,
     val model: String,

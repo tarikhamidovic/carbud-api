@@ -4,6 +4,7 @@ import com.example.carbud.auth.SecurityService
 import com.example.carbud.auth.exceptions.ActionNotAllowedException
 import com.example.carbud.auth.exceptions.UserMissingClaimException
 import com.example.carbud.seller.dto.SellerRequest
+import com.example.carbud.seller.dto.SellerResponse
 import com.example.carbud.vehicle.VehicleService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -18,6 +19,14 @@ class SellerController(
 
     @GetMapping("/{sellerId}")
     fun getSellerById(@PathVariable sellerId: String) = sellerService.getSellerById(sellerId).toResponse()
+
+    @GetMapping("/current")
+    fun getCurrentSeller(): SellerResponse {
+        val sellerId = securityService.sellerId ?:
+            throw UserMissingClaimException("Security context missing claim sellerId")
+
+        return sellerService.getSellerById(sellerId).toResponse()
+    }
 
     @PutMapping("/{sellerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

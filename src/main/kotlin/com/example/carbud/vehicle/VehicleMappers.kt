@@ -20,7 +20,8 @@ fun Vehicle.toResponse() = VehicleResponse(
     numberOfOwners = numberOfOwners,
     color = color,
     doorCount = doorCount,
-    price = price
+    price = price,
+    id = id
 )
 
 fun Vehicle.toVehicleInfo() = VehicleInfo(
@@ -51,6 +52,7 @@ fun VehicleRequest.toEntity(sellerId: String) = Vehicle(
 )
 
 fun VehicleInfo.toResponse() = VehicleInfoResponse(
+    id = id,
     title = title,
     manufacturer = manufacturer,
     model = model,

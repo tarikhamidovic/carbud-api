@@ -53,6 +53,29 @@ class SellerControllerTest : BaseControllerTest() {
     }
 
     @Test
+    fun `getCurrentSeller when called returns 200 and json`() {
+        every { securityService.sellerId } returns "1"
+        every { sellerService.getSellerById("1") } returns ObjectMother.seller()
+        val expected = objectMapper.writeValueAsString(ObjectMother.sellerResponse())
+
+        mockMvc.get("/sellers/current")
+            .andExpect {
+                status { isOk() }
+                content { json(expected) }
+            }
+    }
+
+    @Test
+    fun `getCurrentSeller when no sellerId in security context returns 403`() {
+        every { securityService.sellerId } returns null
+
+        mockMvc.get("/sellers/current")
+            .andExpect {
+                status { isForbidden() }
+            }
+    }
+
+    @Test
     fun `updateSellerById when given sellerId and sellerRequest and user is not admin returns 403`() {
         every { securityService.isAdmin() } returns false
 
