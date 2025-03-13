@@ -5,6 +5,7 @@ import com.example.carbud.seller.dto.SellerResponse
 import com.example.carbud.vehicle.toResponse
 
 fun Seller.toResponse() = SellerResponse(
+    id = id,
     firstName = firstName,
     lastName = lastName,
     userName = userName,

@@ -3,6 +3,7 @@ package com.example.carbud.seller.dto
 import com.example.carbud.vehicle.dto.VehicleInfoResponse
 
 data class SellerResponse(
+    val id: String?,
     val firstName: String?,
     val lastName: String?,
     val userName: String,
